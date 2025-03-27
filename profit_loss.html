@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEGAD GRILL - Profit & Loss Report</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Basic Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+  
+    .sidebar-header {
+      padding: 15px 20px;
+      text-align: left;
+      background-color: #2c3e50;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  
+    .sidebar-header h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #ecf0f1;
+      font-weight: bold;
+    }
+  
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .sidebar-menu li {
+      margin-bottom: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      color: #ecf0f1;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+  
+    .sidebar-menu a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  
+    .sidebar-menu a.active {
+      background-color: #00BCD4;
+      color: #fff;
+    }
+  
+    .sidebar-menu i {
+      margin-right: 10px;
+      font-size: 18px;
+      width: 20px;
+      text-align: center;
+    }
+  
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 250px;
+      background-color: #f5f5f5;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background-color: #fff;
+      border-bottom: 1px solid #e0e0e0;
+    }
+  
+    .page-header h1 {
+      color: #333;
+      font-size: 24px;
+      margin: 0;
+    }
+  
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+  
+    .notification-icon {
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: #e74c3c;
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Report Content */
+    .report-container {
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+    }
+    
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 20px;
+    }
+    
+    .report-header h2 {
+      font-size: 20px;
+      color: #333;
+      margin: 0;
+    }
+    
+    .report-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: #00BCD4;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      text-decoration: none;
+    }
+    
+    .btn:hover {
+      background-color: #0097A7;
+    }
+    
+    /* Date Filter */
+    .date-filter {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .date-filter select, .date-filter input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    /* Summary Cards */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .summary-card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .summary-card h3 {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    
+    .summary-card .value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .summary-card .trend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    
+    .trend-up {
+      color: #4CAF50;
+    }
+    
+    .trend-down {
+      color: #F44336;
+    }
+    
+    /* Financial Table */
+    .financial-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    
+    .financial-table th, .financial-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .financial-table th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+    
+    .financial-table tr.total {
+      font-weight: bold;
+      background-color: #f9f9f9;
+    }
+    
+    .financial-table .amount {
+      text-align: right;
+    }
+    
+    .financial-table .positive {
+      color: #4CAF50;
+    }
+    
+    .financial-table .negative {
+      color: #F44336;
+    }
+    
+    /* Chart Container */
+    .chart-container {
+      height: 400px;
+      margin-bottom: 30px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+      .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .chart-container {
+        height: 300px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 0;
+        transition: width 0.3s;
+      }
+      
+      .sidebar.active {
+        width: 250px;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1001;
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+      
+      .summary-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .admin-text {
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+    }
+    
+    .admin-text i {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>NEGAD GRILL</h2>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="order_history.html"><i class="fas fa-history"></i> Orders</a></li>
+      <li><a href="kitchen_dashboard.html"><i class="fas fa-fire"></i> Kitchen</a></li>
+      <li><a href="reports.html" class="active"><i class="fas fa-chart-bar"></i> Reports</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="page-header">
+      <h1>Profit & Loss Report</h1>
+      <div class="user-info">
+        <div class="notification-icon">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </div>
+        <span class="admin-text"><i class="fas fa-user"></i> Admin</span>
+      </div>
+    </div>
+    
+    <div class="report-container">
+      <div class="report-header">
+        <h2>Profit & Loss Statement</h2>
+        <div class="report-actions">
+          <button class="btn" onclick="printReport()">Print</button>
+          <button class="btn" onclick="downloadPDF()">Download PDF</button>
+          <button class="btn" onclick="downloadExcel()">Download Excel</button>
+        </div>
+      </div>
+      
+      <div class="date-filter">
+        <label for="period">Period:</label>
+        <select id="period" onchange="updateReport()">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly" selected>Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="yearly">Yearly</option>
+          <option value="custom">Custom Range</option>
+        </select>
+        
+        <div id="custom-date-range" style="display: none; margin-left: 10px;">
+          <label for="start-date">From:</label>
+          <input type="date" id="start-date">
+          <label for="end-date">To:</label>
+          <input type="date" id="end-date">
+          <button class="btn" onclick="updateReport()">Apply</button>
+        </div>
+      </div>
+      
+      <!-- Summary Cards -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <h3>Total Revenue</h3>
+          <div class="value">KSh 458,750</div>
+          <div class="trend trend-up">
+            <i class="fas fa-arrow-up"></i> 12.5% vs previous period
+          </div>
+        </div>
+        
+        <div class="summary-card">
+          <h3>Total Expenses</h3>
+          <div class="value">KSh 325,200</div>
+          <div class="trend trend-up">
+            <i class="fas fa-arrow-up"></i> 8.2% vs previous period
+          </div>
+        </div>
+        
+        <div class="summary-card">
+          <h3>Net Profit</h3>
+          <div class="value">KSh 133,550</div>
+          <div class="trend trend-up">
+            <i class="fas fa-arrow-up"></i> 15.3% vs previous period
+          </div>
+        </div>
+        
+        <div class="summary-card">
+          <h3>Profit Margin</h3>
+          <div class="value">29.1%</div>
+          <div class="trend trend-up">
+            <i class="fas fa-arrow-up"></i> 2.1% vs previous period
+          </div>
+        </div>
+      </div>
+      
+      <!-- Chart -->
+      <div class="chart-container">
+        <canvas id="profitLossChart"></canvas>
+      </div>
+      
+      <!-- Financial Table -->
+      <table class="financial-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th class="amount">Amount (KSh)</th>
+            <th class="amount">% of Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="total">
+            <td>Revenue</td>
+            <td class="amount">458,750</td>
+            <td class="amount">100.0%</td>
+          </tr>
+          
+          <tr>
+            <td>Food Sales</td>
+            <td class="amount">385,350</td>
+            <td class="amount">84.0%</td>
+          </tr>
+          
+          <tr>
+            <td>Beverage Sales</td>
+            <td class="amount">73,400</td>
+            <td class="amount">16.0%</td>
+          </tr>
+          
+          <tr class="total">
+            <td>Cost of Goods Sold</td>
+            <td class="amount negative">183,500</td>
+            <td class="amount">40.0%</td>
+          </tr>
+          
+          <tr>
+            <td>Food Cost</td>
+            <td class="amount negative">154,140</td>
+            <td class="amount">33.6%</td>
+          </tr>
+          
+          <tr>
+            <td>Beverage Cost</td>
+            <td class="amount negative">29,360</td>
+            <td class="amount">6.4%</td>
+          </tr>
+          
+          <tr class="total">
+            <td>Gross Profit</td>
+            <td class="amount positive">275,250</td>
+            <td class="amount">60.0%</td>
+          </tr>
+          
+          <tr class="total">
+            <td>Operating Expenses</td>
+            <td class="amount negative">141,700</td>
+            <td class="amount">30.9%</td>
+          </tr>
+          
+          <tr>
+            <td>Labor</td>
+            <td class="amount negative">91,750</td>
+            <td class="amount">20.0%</td>
+          </tr>
+          
+          <tr>
+            <td>Rent</td>
+            <td class="amount negative">25,000</td>
+            <td class="amount">5.4%</td>
+          </tr>
+          
+          <tr>
+            <td>Utilities</td>
+            <td class="amount negative">12,500</td>
+            <td class="amount">2.7%</td>
+          </tr>
+          
+          <tr>
+            <td>Marketing</td>
+            <td class="amount negative">5,500</td>
+            <td class="amount">1.2%</td>
+          </tr>
+          
+          <tr>
+            <td>Maintenance</td>
+            <td class="amount negative">3,750</td>
+            <td class="amount">0.8%</td>
+          </tr>
+          
+          <tr>
+            <td>Other Expenses</td>
+            <td class="amount negative">3,200</td>
+            <td class="amount">0.7%</td>
+          </tr>
+          
+          <tr class="total">
+            <td>Net Profit</td>
+            <td class="amount positive">133,550</td>
+            <td class="amount">29.1%</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Key Insights -->
+      <div class="insights">
+        <h3>Key Insights</h3>
+        <ul>
+          <li>Food cost percentage is 40%, which is slightly above the industry standard of 28-35%. Consider reviewing menu pricing or ingredient costs.</li>
+          <li>Labor cost is at 20% of revenue, which is within the industry standard of 18-22%.</li>
+          <li>Beverage sales contribute 16% to total revenue with a 40% cost, indicating a good profit margin in this category.</li>
+          <li>Overall profit margin of 29.1% is excellent compared to the industry average of 3-10%.</li>
+          <li>Marketing expenses are only 1.2% of revenue, which is below the recommended 3-6%. Consider increasing marketing budget to drive more sales.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Include Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    // Initialize chart
+    function initChart() {
+      const ctx = document.getElementById('profitLossChart').getContext('2d');
+      
+      // Sample data - this would be replaced with actual data from your backend
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+      const revenue = [380000, 395000, 410000, 425000, 440000, 458750];
+      const expenses = [285000, 295000, 305000, 310000, 318000, 325200];
+      const profit = revenue.map((rev, i) => rev - expenses[i]);
+      
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: months,
+          datasets: [
+            {
+              label: 'Revenue',
+              data: revenue,
+              backgroundColor: 'rgba(0, 188, 212, 0.7)',
+              borderColor: 'rgba(0, 188, 212, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'Expenses',
+              data: expenses,
+              backgroundColor: 'rgba(255, 99, 132, 0.7)',
+              borderColor: 'rgba(255, 99, 132, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'Profit',
+              data: profit,
+              type: 'line',
+              fill: false,
+              backgroundColor: 'rgba(76, 175, 80, 0.7)',
+              borderColor: 'rgba(76, 175, 80, 1)',
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Amount (KSh)'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Month'
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    // Update report based on selected period
+    function updateReport() {
+      const period = document.getElementById('period').value;
+      
+      if (period === 'custom') {
+        document.getElementById('custom-date-range').style.display = 'block';
+      } else {
+        document.getElementById('custom-date-range').style.display = 'none';
+        
+        // In a real application, you would fetch data for the selected period
+        // For this demo, we'll just use the same data
+        
+        // Reinitialize chart with the "new" data
+        initChart();
+      }
+    }
+    
+    // Print report
+    function printReport() {
+      window.print();
+    }
+    
+    // Download as PDF
+    function downloadPDF() {
+      alert('PDF download functionality would be implemented here.');
+    }
+    
+    // Download as Excel
+    function downloadExcel() {
+      alert('Excel download functionality would be implemented here.');
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      initChart();
+      
+      // Set up period change handler
+      document.getElementById('period').addEventListener('change', function() {
+        if (this.value === 'custom') {
+          document.getElementById('custom-date-range').style.display = 'block';
+        } else {
+          document.getElementById('custom-date-range').style.display = 'none';
+          updateReport();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+

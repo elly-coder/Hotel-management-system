@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kitchen Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      position: fixed;
+      height: 100%;
+      overflow-y: auto;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #3d5871;
+    }
+
+    .sidebar-header h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #ecf0f1;
+    }
+
+    .sidebar-menu {
+      padding: 0;
+      list-style: none;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      padding: 0;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      color: #ecf0f1;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-menu a:hover {
+      background-color: #3d5871;
+    }
+
+    .sidebar-menu a.active {
+      background-color: #00c4cc;
+    }
+
+    .sidebar-menu i {
+      margin-right: 10px;
+      font-size: 18px;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Main Content Wrapper */
+    .content-wrapper {
+      margin-left: 250px;
+      transition: margin-left 0.3s;
+    }
+
+    /* Mobile Toggle Button */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1001;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    
+    /* Kitchen Dashboard Styles */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    h1 {
+      color: #e74c3c;
+    }
+    
+    .refresh-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .refresh-button {
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .refresh-button:hover {
+      background-color: #3a7bc8;
+    }
+    
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .order-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .order-card.pending {
+      border-top: 4px solid #f39c12;
+    }
+    
+    .order-card.processing {
+      border-top: 4px solid #3498db;
+    }
+    
+    .order-card.completed {
+      border-top: 4px solid #2ecc71;
+    }
+    
+    .order-card.cancelled {
+      border-top: 4px solid #e74c3c;
+    }
+    
+    .order-header {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .order-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .order-status {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+    
+    .order-status.pending {
+      background-color: rgba(243, 156, 18, 0.2);
+      color: #d35400;
+    }
+    
+    .order-status.processing {
+      background-color: rgba(52, 152, 219, 0.2);
+      color: #2980b9;
+    }
+    
+    .order-status.completed {
+      background-color: rgba(46, 204, 113, 0.2);
+      color: #27ae60;
+    }
+    
+    .order-status.cancelled {
+      background-color: rgba(231, 76, 60, 0.2);
+      color: #c0392b;
+    }
+    
+    .order-body {
+      padding: 15px;
+    }
+    
+    .order-info {
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .order-items {
+      margin-bottom: 15px;
+    }
+    
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed #eee;
+    }
+    
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    
+    .item-name {
+      font-weight: bold;
+    }
+    
+    .item-quantity {
+      background-color: #f1f1f1;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+    
+    .order-total {
+      font-weight: bold;
+      text-align: right;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    
+    .order-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .action-button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      flex: 1;
+    }
+    
+    .process-button {
+      background-color: #3498db;
+      color: white;
+    }
+    
+    .complete-button {
+      background-color: #2ecc71;
+      color: white;
+    }
+    
+    .cancel-button {
+      background-color: #e74c3c;
+      color: white;
+    }
+    
+    .filter-container {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .filter-button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #f1f1f1;
+    }
+    
+    .filter-button.active {
+      background-color: #4a90e2;
+      color: white;
+    }
+    
+    .no-orders {
+      text-align: center;
+      padding: 40px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      grid-column: 1 / -1;
+    }
+    
+    /* Responsive Styles to adjust on  different widths  */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .content-wrapper {
+        margin-left: 0;
+      }
+      
+      .menu-toggle {
+        display: block;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .orders-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-container {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Menu Toggle Button -->
+  <button class="menu-toggle" id="menu-toggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>NEGAD GRILL</h2>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="order_history.html"><i class="fas fa-history"></i> Orders</a></li>
+      <li><a href="kitchen_dashboard.html"><i class="fas fa-fire"></i> Kitchen</a></li>
+      <li><a href="reports.html" class="active"><i class="fas fa-chart-bar"></i> Reports</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </div>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <div class="container">
+      <header>
+        <h1>Chef's Screen</h1>
+        <div class="refresh-container">
+          <span id="lastUpdated">Last updated: --:--:--</span>
+          <button id="refreshButton" class="refresh-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
+      </header>
+      
+      <div class="filter-container">
+        <button class="filter-button active" data-filter="all">All Orders</button>
+        <button class="filter-button" data-filter="Pending">Pending</button>
+        <button class="filter-button" data-filter="Processing">Processing</button>
+        <button class="filter-button" data-filter="Completed">Completed</button>
+      </div>
+      
+      <div id="ordersContainer" class="orders-grid">
+        <div class="no-orders">Loading orders...</div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Sidebar functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      
+      if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+          sidebar.classList.toggle('active');
+        });
+      }
+      
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(event) {
+        const isClickInsideSidebar = sidebar.contains(event.target);
+        const isClickOnMenuToggle = menuToggle.contains(event.target);
+        
+        if (!isClickInsideSidebar && !isClickOnMenuToggle && sidebar.classList.contains('active')) {
+          sidebar.classList.remove('active');
+        }
+      });
+    });
+  
+    // Kitchen Dashboard functionality
+    let orders = [];
+    let refreshIntervalId;
+    let currentFilter = 'all';
+    
+    const refreshButton = document.getElementById('refreshButton');
+    const lastUpdatedSpan = document.getElementById('lastUpdated');
+    const ordersContainer = document.getElementById('ordersContainer');
+    const filterButtons = document.querySelectorAll('.filter-button');
+    
+    function initDashboard() {
+      refreshButton.addEventListener('click', fetchOrders);
+      
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          
+          currentFilter = this.dataset.filter;
+          renderOrders();
+        });
+      });
+      
+      fetchOrders();
+      
+      refreshIntervalId = setInterval(fetchOrders, 30000);
+    }
+    
+    function fetchOrders() {
+      updateLastUpdated();
+      
+      fetch('fetch_orders.php')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.orders) {
+            orders = data.orders;
+            renderOrders();
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching orders:', error);
+          ordersContainer.innerHTML = '<div class="no-orders">Error loading orders. Please try again.</div>';
+        });
+    }
+    
+    function renderOrders() {
+      if (orders.length === 0) {
+        ordersContainer.innerHTML = '<div class="no-orders">No orders found</div>';
+        return;
+      }
+      
+      // Filter orders based on current filter
+      const filteredOrders = currentFilter === 'all' 
+        ? orders 
+        : orders.filter(order => order.status === currentFilter);
+      
+      if (filteredOrders.length === 0) {
+        ordersContainer.innerHTML = `<div class="no-orders">No ${currentFilter.toLowerCase()} orders found</div>`;
+        return;
+      }
+      
+      ordersContainer.innerHTML = '';
+      
+      // Sort orders by created_at (newest first)
+      const sortedOrders = [...filteredOrders].sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      
+      sortedOrders.forEach(order => {
+        const orderCard = document.createElement('div');
+        orderCard.className = `order-card ${order.status.toLowerCase()}`;
+        
+        // Create order header
+        const orderHeader = document.createElement('div');
+        orderHeader.className = 'order-header';
+        orderHeader.innerHTML = `
+          <div class="order-title">Order #${order.order_id}</div>
+          <div class="order-status ${order.status.toLowerCase()}">${order.status}</div>
+        `;
+        
+        // Create order body
+        const orderBody = document.createElement('div');
+        orderBody.className = 'order-body';
+        
+        // Order info
+        const orderInfo = document.createElement('div');
+        orderInfo.className = 'order-info';
+        orderInfo.innerHTML = `
+          <div>Table: ${order.table_number}</div>
+          <div>Time: ${formatDateTime(order.created_at)}</div>
+        `;
+        
+        // Order items
+        const orderItems = document.createElement('div');
+        orderItems.className = 'order-items';
+        
+        order.items.forEach(item => {
+          const orderItem = document.createElement('div');
+          orderItem.className = 'order-item';
+          orderItem.innerHTML = `
+            <div class="item-name">${item.item_name}</div>
+            <div class="item-quantity">x${item.quantity}</div>
+          `;
+          orderItems.appendChild(orderItem);
+        });
+        
+        // Order total
+        const orderTotal = document.createElement('div');
+        orderTotal.className = 'order-total';
+        orderTotal.textContent = `Total: Ksh ${order.total_amount}`;
+        
+        // Order actions
+        const orderActions = document.createElement('div');
+        orderActions.className = 'order-actions';
+        
+        // Add appropriate action buttons based on order status
+        if (order.status === 'Pending') {
+          orderActions.innerHTML = `
+            <button class="action-button process-button" onclick="updateOrderStatus(${order.order_id}, 'Processing')">Process</button>
+            <button class="action-button cancel-button" onclick="updateOrderStatus(${order.order_id}, 'Cancelled')">Cancel</button>
+          `;
+        } else if (order.status === 'Processing') {
+          orderActions.innerHTML = `
+            <button class="action-button complete-button" onclick="updateOrderStatus(${order.order_id}, 'Completed')">Complete</button>
+            <button class="action-button cancel-button" onclick="updateOrderStatus(${order.order_id}, 'Cancelled')">Cancel</button>
+          `;
+        }
+        
+        // Append all elements to order body
+        orderBody.appendChild(orderInfo);
+        orderBody.appendChild(orderItems);
+        orderBody.appendChild(orderTotal);
+        
+        if (order.status === 'Pending' || order.status === 'Processing') {
+          orderBody.appendChild(orderActions);
+        }
+        
+        // Append header and body to order card
+        orderCard.appendChild(orderHeader);
+        orderCard.appendChild(orderBody);
+        
+        // Append order card to container
+        ordersContainer.appendChild(orderCard);
+      });
+    }
+    
+    // Update order status
+    function updateOrderStatus(orderId, newStatus) {
+      fetch('update_order_status.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          order_id: orderId,
+          status: newStatus
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          // Update the order in the local array
+          const orderIndex = orders.findIndex(order => order.order_id === orderId);
+          if (orderIndex !== -1) {
+            orders[orderIndex].status = newStatus;
+          }
+          // Re-render orders
+          renderOrders();
+        } else {
+          alert('Error updating order status: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Network error. Please try again.');
+      });
+    }
+    
+    // Update last updated timestamp
+    function updateLastUpdated() {
+      const now = new Date();
+      lastUpdatedSpan.textContent = `Last updated: ${now.toLocaleTimeString()}`;
+    }
+    
+    // Format date and time
+    function formatDateTime(dateTimeStr) {
+      const date = new Date(dateTimeStr);
+      return date.toLocaleString();
+    }
+    
+    // Initialize the dashboard when the page loads
+    document.addEventListener('DOMContentLoaded', initDashboard);
+  </script>
+</body>
+</html>

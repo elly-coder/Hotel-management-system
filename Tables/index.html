@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEGAD - Table Reservations</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!--   icons  -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container header-container">
+        <div class="logo">
+          <a href="index.html">NEGAD GRILL</a>
+        </div>
+        <div class="contact-info">
+          <span><i class="fas fa-phone"></i> +254 123 456 789</span>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <nav id="main-nav">
+          <ul>
+            <li><a href="/login/homepage/display.html">HOME</a></li>
+            <li><a href="/login/Menu/NEGADMENU.html">MENU</a></li>
+            <li><a href="#"></a></li>
+            <li><a href="#" class="active">TABLES</a></li>
+            <li><a href="#">ABOUT US</a></li>
+            <li><a href="#">CONTACT US</a></li>
+          </ul>
+        </nav>
+        <button class="mobile-menu-btn" id="mobile-menu-btn">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h1>Tables</h1>
+        <div class="breadcrumb">
+          <a href="/login/homepage/display.html">HOME</a>
+          <img src="" alt="">
+        </div>
+      </div>
+    </section>
+    <!-- Booking Form -->
+    <section class="booking-form">
+      <div class="container">
+        <form id="reservation-form" action="reserve.php" method="post" >
+          <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="reservation_date" value="2025-03-03" required />
+          </div>
+          <div class="form-group">
+            <label for="time">Time:</label>
+            <input type="time" id="time" name="reservation_time" value="17:00" required />
+          </div>
+          <div class="form-group">
+            <label for="adult">Adults:</label>
+            <select id="adult" name="adult_count" required>
+              <option value="">Select</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="child">Children:</label>
+            <select id="child" name="child_count" required>
+              <option value="">Select</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3+</option>
+            </select>
+          </div>
+          <link><a href="/DETAILSENTRY.html"><button type="submit" class="btn btn-primary">SUBMIT</button></a></link>
+        </form>
+      </div>
+    </section>
+    <!-- Tables Section -->
+    <section class="tables-section">
+      <div class="container">
+        <div class="section-title">
+          <span>OUR TABLES</span>
+          <h2>Explore Our <span>TABLES</span></h2>
+        </div>
+
+        <div class="tables-grid">
+          <!-- Table 1 -->
+          <div class="table-card">
+            <div class="table-image">
+              <img src="img/tb001.jpg" alt="Lovers Haven" />
+              <div class="status available">Available</div>
+            </div>
+            <div class="table-info">
+              <h3>Lovers Haven</h3>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="details">
+                <span><i class="fas fa-chair"></i> Table 1</span>
+                <span><i class="fas fa-users"></i> 2 Capacity</span>
+                <span><i class="fas fa-utensils"></i> Available</span>
+              </div>
+              <p>
+                A beautifully decorated private table, perfect for anniversaries and romantic dates.
+              </p>
+              <div class="buttons">
+                <link><a href="/login/DETAILSENTRY.html"><button class="btn btn-dark">BOOK NOW</button></a></link>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table 2 -->
+          <div class="table-card">
+            <div class="table-image">
+              <img src="img/Snowy forest or frosty whites_.jpg" alt="Silver Dine" />
+              <div class="status occupied">Occupied</div>
+            </div>
+            <div class="table-info">
+              <h3>The Cozy Nook</h3>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="details">
+                <span><i class="fas fa-chair"></i>Table 2</span>
+                <span><i class="fas fa-users"></i> 6 Capacity</span>
+                <span><i class="fas fa-utensils"></i> Available</span>
+              </div>
+              <p>
+                A warm and welcoming dining space with plush seating, ideal for intimate family meals.
+              </p>
+              <div class="buttons">
+                <link><a href="/login/DETAILSENTRY.html"><button class="btn btn-dark">BOOK NOW</button></a></link>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table 3 -->
+          <div class="table-card">
+            <div class="table-image">
+              <img src="img/tb003.jpg" alt="Grand Royale" />
+              <div class="status available">Available</div>
+            </div>
+            <div class="table-info">
+              <h3>Grand Royale</h3>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="details">
+                <span><i class="fas fa-chair"></i>Table 3</span>
+                <span><i class="fas fa-users"></i> 6 Capacity</span>
+                <span><i class="fas fa-utensils"></i> Available</span>
+              </div>
+              <p>
+                A premium dining space with a sophisticated ambiance, ideal for high-profile guests.
+              </p>
+              <div class="buttons">
+                <link><a href="/login/DETAILSENTRY.html"><button class="btn btn-dark">BOOK NOW</button></a></link>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table 4 -->
+          <div class="table-card">
+            <div class="table-image">
+              <img src="./img/tb002.jpeg" alt="Regal Round" />
+              <div class="status maintenance">Occupied</div>
+            </div>
+            <div class="table-info">
+              <h3>Regal Round</h3>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="details">
+                <span><i class="fas fa-chair"></i> Table 4</span>
+                <span><i class="fas fa-users"></i> 6 Capacity</span>
+                <span><i class="fas fa-tools"></i> Maintenance</span>
+              </div>
+              <p>
+                A cozy round table with elegant decor, perfect for group
+                meetings and high discussions.
+              </p>
+              <div class="buttons">
+                <link><a href="/login/DETAILSENTRY.html"><button class="btn btn-dark">BOOK NOW</button></a></link>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table 5 -->
+          <div class="table-card">
+            <div class="table-image">
+              <img src="./img/tb2.jpeg" alt="Elite Square" />
+              <div class="status available">Available</div>
+            </div>
+            <div class="table-info">
+              <h3>Elite Square</h3>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="details">
+                <span><i class="fas fa-chair"></i>Table 5</span>
+                <span><i class="fas fa-users"></i> 4 Capacity</span>
+                <span><i class="fas fa-utensils"></i> Available</span>
+              </div>
+              <p>
+                A formal L-shaped conference table, designed for executive
+                meetings and presentations to clients.
+              </p>
+              <div class="buttons">
+                <link><a href="/login/DETAILSENTRY.html"><button class="btn btn-dark">BOOK NOW</button></a></link>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table 6 -->
+          <div class="table-card">
+            <div class="table-image">
+              <img src="img/tb006.jpg" alt="Board Room" />
+              <div class="status reserved">Reserved</div>
+            </div>
+            <div class="table-info">
+              <h3>Board Room</h3>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="details">
+                <span><i class="fas fa-chair"></i>Table 6</span>
+                <span><i class="fas fa-users"></i> 8 Capacity</span>
+                <span><i class="fas fa-calendar-check"></i> Reserved</span>
+              </div>
+              <p>
+                A spacious seminar-style setup with modern projector tables,
+                ideal for corporate events.
+              </p>
+              <div class="buttons">
+                <link><a href="/login/DETAILSENTRY.html"><button class="btn btn-dark">BOOK NOW</button></a></link>
+              </div>
+            </div>
+          </div>
+            
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h2>NEGAD GRILL</h2>
+            <p>The perfect place for your dining experience.</p>
+          </div>
+          <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Services</a></li>
+              <li><a href="#">Tables</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-contact">
+            <h3>Contact Us</h3>
+            <p><i class="fas fa-map-marker-alt"></i> Magunas Road, Murang'a</p>
+            <p><i class="fas fa-phone"></i> +254 123 456 789</p>
+            <p><i class="fas fa-envelope"></i> info@negad.com</p>
+          </div>
+          <div class="footer-social">
+            <h3>Follow Us</h3>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 NEGAD. All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

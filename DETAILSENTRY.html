@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant Management</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: url(photos/recepition.jpg) center/cover no-repeat;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 0;
+    }
+
+    .main-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 500px;
+      background-color: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .section-header {
+      background-color: #00c4cc;
+      color: white;
+      font-weight: bold;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .form-content {
+      padding: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 4px;
+    }
+
+    .name-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .name-row > div {
+      flex: 1;
+    }
+
+    .required-note {
+      font-size: 12px;
+      color: #e74c3c;
+      margin-top: 5px;
+    }
+
+    .button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .button-blue {
+      background-color: #4a90e2;
+    }
+
+    .button-red {
+      background-color: #e74c3c;
+    }
+
+    .status-section {
+      margin-top: 20px;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      padding-top: 20px;
+    }
+
+    .status-section h3 {
+      margin-bottom: 15px;
+      text-align: center;
+      color: #333;
+    }
+
+    .status-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .status {
+      padding: 10px 20px;
+      border-radius: 20px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .status-green {
+      background-color: #2ecc71;
+    }
+
+    .status-red {
+      background-color: #e74c3c;
+    }
+
+    .status.disabled {
+      background-color: rgba(204, 204, 204, 0.8);
+      cursor: not-allowed;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .lock-button {
+      background-color: #f4c542;
+      padding: 10px 25px;
+      border-radius: 20px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .lock-button.locked {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <div class="section-header">
+      Customer details
+    </div>
+    
+    <div class="form-content">
+      <div class="form-group">
+        <label>Full names*</label>
+        <div class="name-row">
+          <div>
+            <span>First:</span>
+            <input type="text" id="first-name">
+          </div>
+          <div>
+            <span>Last:</span>
+            <input type="text" id="last-name">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Phone number*:</label>
+        <input type="text" id="phone-number" placeholder="07xxxxxxxx or 01xxxxxxxx">
+      </div>
+
+      <div class="form-group">
+        <label>Table number:</label>
+        <input type="text" id="table-number" placeholder="1">
+      </div>
+
+      <div class="form-group">
+        <label>Table Name:</label>
+        <input type="text" id="table-name" placeholder="The Lovers Haven">
+      </div>
+
+      <div class="required-note">*Required</div>
+
+      <div class="button-container">
+        <button class="button button-blue" onclick="verifyNumber()">Verify</button>
+        <button class="button button-red hidden" id="error-btn">Please try again</button>
+      </div>
+
+      <div class="status-section">
+        <h3>Update table status</h3>
+        <div class="status-buttons">
+          <div class="status status-green" id="available-btn" onclick="setAvailable()">Back</div>
+          <div class="status status-red disabled" id="occupied-btn" onclick="setOccupied()">Occupied</div>
+        </div>
+
+        <div class="button-container">
+          <button class="lock-button" id="lock-btn" onclick="setLocked()">Lock</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden forms for database interaction -->
+  <form id="customerForm" action="process_booking.php" method="post" style="display: none;">
+    <input type="hidden" name="first_name" id="hidden-first-name">
+    <input type="hidden" name="last_name" id="hidden-last-name">
+    <input type="hidden" name="phone_number" id="hidden-phone-number">
+    <input type="hidden" name="table_number" id="hidden-table-number">
+    <input type="hidden" name="table_name" id="hidden-table-name">
+    <input type="hidden" name="table_status" id="hidden-table-status" value="Reserved">
+  </form>
+
+  <form id="availableForm" action="update_table_status.php" method="post" style="display: none;">
+    <input type="hidden" name="table_number" id="available-table-number">
+    <input type="hidden" name="status" value="Available">
+  </form>
+
+  <form id="occupiedForm" action="update_table_status.php" method="post" style="display: none;">
+    <input type="hidden" name="table_number" id="occupied-table-number">
+    <input type="hidden" name="status" value="Occupied">
+  </form>
+
+  <form id="lockedForm" action="update_table_status.php" method="post" style="display: none;">
+    <input type="hidden" name="table_number" id="locked-table-number">
+    <input type="hidden" name="status" value="Locked">
+  </form>
+
+  <script>
+    let isVerified = false;
+
+    function verifyNumber() {
+      const firstName = document.getElementById('first-name').value.trim();
+      const lastName = document.getElementById('last-name').value.trim();
+      const phoneNumber = document.getElementById('phone-number').value.trim();
+      const tableNumber = document.getElementById('table-number').value.trim();
+      const tableName = document.getElementById('table-name').value.trim();
+      const errorBtn = document.getElementById('error-btn');
+      const occupiedBtn = document.getElementById('occupied-btn');
+
+      const isValidPhone = /^(07|01)\d{8}$/.test(phoneNumber);
+      
+      if (firstName && lastName && isValidPhone && tableNumber) {
+        // Set hidden form values
+        document.getElementById('hidden-first-name').value = firstName;
+        document.getElementById('hidden-last-name').value = lastName;
+        document.getElementById('hidden-phone-number').value = phoneNumber;
+        document.getElementById('hidden-table-number').value = tableNumber;
+        document.getElementById('hidden-table-name').value = tableName;
+        
+        // Set table numbers for other forms
+        document.getElementById('available-table-number').value = tableNumber;
+        document.getElementById('occupied-table-number').value = tableNumber;
+        document.getElementById('locked-table-number').value = tableNumber;
+        
+        // Don't submit the form yet, just mark as verified
+        isVerified = true;
+        
+        alert('All details verified successfully!');
+        errorBtn.classList.add('hidden');
+        occupiedBtn.classList.remove('disabled'); // Enable the occupied button
+      } else {
+        errorBtn.classList.remove('hidden');
+        occupiedBtn.classList.add('disabled'); // Keep the occupied button disabled
+        isVerified = false;
+      }
+    }
+
+    function setOccupied() {
+      const occupiedBtn = document.getElementById('occupied-btn');
+      if (occupiedBtn.classList.contains('disabled')) return;
+      
+      const availableBtn = document.getElementById('available-btn');
+      const lockBtn = document.getElementById('lock-btn');
+      const tableNumber = document.getElementById('table-number').value.trim();
+      
+      if (!tableNumber) {
+        alert('Please enter a table number first');
+        return;
+      }
+      
+      // First submit the customer form if verified
+      if (isVerified) {
+        document.getElementById('customerForm').submit();
+      }
+      
+      // Update the hidden table number field
+      document.getElementById('occupied-table-number').value = tableNumber;
+      
+      // Submit the form to update table status
+      document.getElementById('occupiedForm').submit();
+
+      availableBtn.classList.add('hidden');
+      lockBtn.textContent = 'Locked';
+      lockBtn.classList.add('locked');
+      
+      // Redirect to menu page
+      setTimeout(() => { 
+        const tableNumber = document.getElementById('table-number').value.trim();
+        window.location.href = "menu/NEGADMENU.html?table=" + tableNumber; 
+      }, 500); 
+    }
+    
+    function setAvailable() {
+      const tableNumber = document.getElementById('table-number').value.trim();
+      
+      if (!tableNumber) {
+        alert('Please enter a table number first');
+        return;
+      }
+      
+      // Update the hidden table number field
+      document.getElementById('available-table-number').value = tableNumber;
+      
+      // Submit the form to update table status
+      document.getElementById('availableForm').submit();
+    }
+    
+    function setLocked() {
+      const tableNumber = document.getElementById('table-number').value.trim();
+      
+      if (!tableNumber) {
+        alert('Please enter a table number first');
+        return;
+      }
+      
+      // Update the hidden table number field
+      document.getElementById('locked-table-number').value = tableNumber;
+      
+      // Submit the form to update table status
+      document.getElementById('lockedForm').submit();
+      
+      // Update button appearance
+      const lockBtn = document.getElementById('lock-btn');
+      lockBtn.textContent = 'Locked';
+      lockBtn.classList.add('locked');
+    }
+  </script>
+</body>
+</html>

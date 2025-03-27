@@ -1,0 +1,9 @@
+Set up a proper API endpoint at /api/reservations on your server to handle the data
+
+----Mobile Menu Toggle 
+handles the mobile menu button
+When someone clicks the button:
+
+- We show or hide the menu by adding/removing the 'active' class
+- We transform the button into an X when the menu is open
+- We change it back to three lines when the menu is closed

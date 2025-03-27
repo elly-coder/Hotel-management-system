@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Negad Hotel Menu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: rgb(32, 178, 171);
+      color: #333;
+    }
+
+    header {
+      background-color: lightcoral;
+      color: white;
+      text-align: center;
+      padding: 15px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 1.2rem;
+    }
+
+    .menu-categories {
+      padding: 20px;
+    }
+
+    .category {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color:navajowhite;
+      padding: 5px;
+      margin: 10px 0;
+      border-radius: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+
+    .category h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-family:monospace;
+    }
+
+    .items {
+      display: none;
+      padding: 10px;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 2px dotted #ddd;
+    }
+
+    .item button {
+      background-color: #ff6e61e3;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .order-summary {
+      padding: 20px;
+      background-color: #a8cecb;
+      margin: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-summary h2 {
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    button {
+      background-color: #ff6e61e3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    button:hover {
+      background-color: #e65a50;
+    }
+    
+    .success-message {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      display: none;
+    }
+    
+    .error-message {
+      background-color: #f44336;
+      color: white;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .order-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .proceed-payment {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .proceed-payment:hover {
+      background-color: #45a049;
+    }
+
+    .proceed-payment:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Negad Bites!</h1>
+    <p>Your favorite dishes, served with love. Explore our menu and place your order.</p>
+  </header>
+
+  <main>
+    <!-- Menu Categories -->
+    <section class="menu-categories">
+      <div class="category" onclick="toggleCategory('main-dishes')">
+        <h2>Main Dishes & Accompaniments</h2>
+        <span>+</span>
+      </div>
+      <div class="items" id="main-dishes">
+        <!-- Main Dishes Items -->
+        <div class="item" data-name="Plain Rice" data-price="150">
+          <img src="/photos/plain rice.jpeg" width="50px" height="50px">
+          <span>Plain Rice – Ksh 150</span>
+          <button onclick="addItem('Plain Rice', 150)">+</button>
+        </div>
+        <div class="item" data-name="Pilau" data-price="400">
+          <img src="/photos/pilau spiced.jpeg" width="50px" height="50px">
+          <span>Pilau (Spiced Rice with Meat) – Ksh 400</span>
+          <button onclick="addItem('Pilau', 400)">+</button>
+        </div>
+        <div class="item" data-name="Fried Rice" data-price="350">
+          <img src="/photos/fried rice.jpeg" width="50px" height="50px">
+          <span>Fried Rice – Ksh 350</span>
+          <button onclick="addItem('Fried Rice', 350)">+</button>
+        </div>
+        <div class="item" data-name="Coconut Rice" data-price="300">
+          <img src="/photos/Coconut Rice.jpeg" width="50px" height="50px">
+          <span>Coconut Rice – Ksh 300</span>
+          <button onclick="addItem('Coconut Rice', 300)">+</button>
+        </div>
+        <div class="item" data-name="Ugali" data-price="100">
+          <img src="/photos/ugali.jpeg" width="50px" height="50px">
+          <span>Ugali – Ksh 100</span>
+          <button onclick="addItem('Ugali', 100)">+</button>
+        </div>
+        <div class="item" data-name="Chapati" data-price="80">
+          <img src="/photos/chapati.jpeg" width="50px" height="50px">
+          <span>Chapati – Ksh 80 (each)</span>
+          <button onclick="addItem('Chapati', 80)">+</button>
+        </div>
+        <div class="item" data-name="Naan Bread" data-price="150">
+          <img src="/photos/naan bread.jpeg" width="50px" height="50px">
+          <span>Naan Bread – Ksh 150</span>
+          <button onclick="addItem('Naan Bread', 150)">+</button>
+        </div>
+        <div class="item" data-name="Mashed Potatoes" data-price="250">
+          <img src="/photos/mashed potatoes.jpeg" width="50px" height="50px">
+          <span>Mashed Potatoes – Ksh 250</span>
+          <button onclick="addItem('Mashed Potatoes', 250)">+</button>
+        </div>
+      </div>
+
+      <div class="category" onclick="toggleCategory('savory-cuts')">
+        <h2>Savory Cuts</h2>
+        <span>+</span>
+      </div>
+      <div class="items" id="savory-cuts">
+        <!-- Savory Cuts Items -->
+        <div class="item" data-name="Beef" data-price="400">
+          <img src="/photos/beef.jpeg" width="50px" height="50px">
+          <span>Beef – Ksh 400</span>
+          <button onclick="addItem('Beef', 400)">+</button>
+        </div>
+        <div class="item" data-name="Chicken" data-price="450">
+          <img src="/photos/chicken.jpeg" width="50px" height="50px">
+          <span>Chicken – Ksh 450</span>
+          <button onclick="addItem('Chicken', 450)">+</button>
+        </div>
+        <div class="item" data-name="Mutton" data-price="500">
+          <img src="/photos/mutton.jpeg" width="50px" height="50px">
+          <span>Mutton – Ksh 500</span>
+          <button onclick="addItem('Mutton', 500)">+</button>
+        </div>
+        <div class="item" data-name="Pork" data-price="450">
+          <img src="/photos/pork.jpeg" width="50px" height="50px">
+          <span>Pork – Ksh 450</span>
+          <button onclick="addItem('Pork', 450)">+</button>
+        </div>
+        <div class="item" data-name="Fish" data-price="500">
+          <img src="/photos/fish.jpeg" width="50px" height="50px">
+          <span>Fish – Ksh 500</span>
+          <button onclick="addItem('Fish', 500)">+</button>
+        </div>
+        <div class="item" data-name="Goat Meat" data-price="480">
+          <img src="/photos/goat meat.jpeg" width="50px" height="50px">
+          <span>Goat Meat – Ksh 480</span>
+          <button onclick="addItem('Goat Meat', 480)">+</button>
+        </div>
+      </div>
+
+      <div class="category" onclick="toggleCategory('stews')">
+        <h2>Stews</h2>
+        <span>+</span>
+      </div>
+      <div class="items" id="stews">
+        <!-- Stew Items -->
+        <div class="item" data-name="Beef stew" data-price="350">
+          <img src="/photos/beef stew.jpeg" width="50px" height="50px">
+          <span>Beef stew – Ksh 350</span>
+          <button onclick="addItem('Beef stew', 350)">+</button>
+        </div>
+        <div class="item" data-name="Chicken curry" data-price="400">
+          <img src="/photos/chicken curry.jpeg" width="50px" height="50px">
+          <span>Chicken curry – Ksh 400</span>
+          <button onclick="addItem('Chicken curry', 400)">+</button>
+        </div>
+        <div class="item" data-name="Mutton stew" data-price="450">
+          <img src="/photos/mutton stew.jpeg" width="50px" height="50px">
+          <span>Mutton stew – Ksh 450</span>
+          <button onclick="addItem('Mutton stew', 450)">+</button>
+        </div>
+        <div class="item" data-name="Fish stew" data-price="300">
+          <img src="/photos/fish stew.jpeg" width="50px" height="50px">
+          <span>Fish stew – Ksh 300</span>
+          <button onclick="addItem('Fish stew', 300)">+</button>
+        </div>
+      </div>
+
+      <div class="category" onclick="toggleCategory('Fast-foods')">
+        <h2>Fast foods</h2>
+        <span>+</span>
+      </div>
+      <div class="items" id="Fast-foods">
+        <!-- fast food Items -->
+        <div class="item" data-name="French fries (Chips)" data-price="150">
+          <img src="/photos/french fries.jpeg" width="50px" height="50px">
+          <span>French fries (chips) – Ksh 150</span>
+          <button onclick="addItem('French fries (chips)', 150)">+</button>
+        </div>
+        <div class="item" data-name="Hot dogs" data-price="250">
+          <img src="/photos/hot dog.jpeg" width="50px" height="50px">
+          <span>Hot dogs– Ksh 250</span>
+          <button onclick="addItem('Hot dogs', 250)">+</button>
+        </div>
+        <div class="item" data-name="Samosas" data-price="100">
+          <img src="/photos/samosa.jpeg" width="50px" height="50px">
+          <span>Samosas – Ksh 100</span>
+          <button onclick="addItem('Samosas', 100)">+</button>
+        </div>
+        <div class="item" data-name="Sausages" data-price="120">
+          <img src="/photos/sausage.jpeg" width="50px" height="50px">
+          <span>Sausages – Ksh 120</span>
+          <button onclick="addItem('Sausages', 120)">+</button>
+        </div>
+        <div class="item" data-name="Shawarma" data-price="500">
+          <img src="/photos/shawarma.jpeg" width="50px" height="50px">
+          <span>Shawarma – Ksh 500</span>
+          <button onclick="addItem('Shawarma', 500)">+</button>
+        </div>
+        <div class="item" data-name="Burgers (Beef/Chicken/Veg)" data-price="400">
+          <img src="/photos/burger.jpeg" width="50px" height="50px">
+          <span>Burgers (beef/chicken/veg)– Ksh 400</span>
+          <button onclick="addItem('Burgers (Beef/Chicken/Veg)', 400)">+</button>
+        </div>
+      </div>
+
+      <div class="category" onclick="toggleCategory('Desserts')">
+        <h2>Desserts</h2>
+        <span>+</span>
+      </div>
+      <div class="items" id="Desserts">
+        <!-- Dessert Items -->
+        <div class="item" data-name="Icecream (Chocolate, Vanilla,Strawberry)" data-price="300">
+          <img src="/photos/icecream.jpeg" width="50px" height="50px">
+          <span>Icecream (Chocolate,Vanilla,Strawberry) – Ksh 300</span>
+          <button onclick="addItem('Icecream (Chocolate,Vanilla,Strawberry)', 300)">+</button>
+        </div>
+        <div class="item" data-name="Fruit salad" data-price="250">
+          <img src="/photos/fruit salad.jpeg" width="50px" height="50px">
+          <span>Fruit salad – Ksh 250</span>
+          <button onclick="addItem('Fruit salad', 250)">+</button>
+        </div>
+        <div class="item" data-name="Cake (Black forest,Red velvet)" data-price="400">
+          <img src="/photos/cake.jpeg" width="50px" height="50px">
+          <span>Cake (Black forest,Red velvet) – Ksh 400</span>
+          <button onclick="addItem('Cake (Black forest,Red velvet)', 400)">+</button>
+        </div>
+        <div class="item" data-name="Pudding (Chocolate,Caramel)" data-price="350">
+          <img src="/photos/pudding.jpeg" width="50px" height="50px">
+          <span>Pudding (Chocolate,Caramel) – Ksh 350</span>
+          <button onclick="addItem('Pudding(Chocolate,Caramel)', 350)">+</button>
+        </div>
+        <div class="item" data-name="Donuts" data-price="200">
+          <img src="/photos/donut.jpeg" width="50px" height="50px">
+          <span>Donuts – Ksh 200</span>
+          <button onclick="addItem('Donuts', 200)">+</button>
+        </div>
+      </div>
+  
+      <div class="category" onclick="toggleCategory('Hot-Beverages')">
+        <h2>Hot Beverages</h2>
+        <span>+</span>
+      </div>
+      <div class="items" id="Hot-Beverages">
+        <!-- Hot Beverages Items -->
+        <div class="item" data-name="Black Tea" data-price="100">
+          <img src="/photos/black tea.jpeg" width="50px" height="50px">
+          <span>Black Tea – Ksh 100</span>
+          <button onclick="addItem('Black Tea', 100)">+</button>
+        </div>
+        <div class="item" data-name="Ginger Tea" data-price="400">
+          <img src="/photos/ginger tea.jpeg" width="50px" height="50px">
+          <span>Ginger Tea – Ksh 400</span>
+          <button onclick="addItem('Ginger Tea', 400)">+</button>
+        </div>
+        <div class="item" data-name="Black Coffee" data-price="150">
+          <img src="/photos/Black coffee.jpeg" width="50px" height="50px">
+          <span>Black Coffee – Ksh 150</span>
+          <button onclick="addItem('Black Coffee', 150)">+</button>
+        </div>
+        <div class="item" data-name="Hot Chocolate" data-price="300">
+          <img src="/photos/Hot coffee.jpeg" width="50px" height="50px">
+          <span>Hot Chocolate – Ksh 300</span>
+          <button onclick="addItem('Hot Chocolate', 300)">+</button>
+        </div>
+        <div class="item" data-name="Hot water" data-price="50">
+          <img src="/photos/hot water.jpeg" width="50px" height="50px">
+          <span>Hot water – Ksh 50</span>
+          <button onclick="addItem('Hot water', 50)">+</button>
+        </div>
+      </div>
+
+      <div class="category" onclick="toggleCategory('Cold-Beverages')">
+        <h2>Cold Beverages</h2>
+        <span>+</span>
+      </div>
+      <div class="items" id="Cold-Beverages">
+        <!-- Cold Beverages Items -->
+        <div class="item" data-name="Iced Tea" data-price="200">
+          <img src="/photos/iced tea.jpeg" width="50px" height="50px">
+          <span>Iced Tea – Ksh 200</span>
+          <button onclick="addItem('Iced Tea', 200)">+</button>
+        </div>
+        <div class="item" data-name="Iced coffee" data-price="250">
+          <img src="/photos/iced coffee.jpeg" width="50px" height="50px">
+          <span>Iced coffee – Ksh 250</span>
+          <button onclick="addItem('Iced coffee', 250)">+</button>
+        </div>
+        <div class="item" data-name="Fresh juices (Mango,Orange, Pineapple)" data-price="300">
+          <img src="/photos/fresh juices.jpeg" width="50px" height="50px">
+          <span>Fresh juices (Mango,Orange, Pineapple) – Ksh 300</span>
+          <button onclick="addItem('Fresh juices (Mango,Orange, Pineapple)', 300)">+</button>
+        </div>
+        <div class="item" data-name="Soft drinks (Soda, Energy drinks)" data-price="150">
+          <img src="/photos/soft drinks.jpeg" width="50px" height="50px">
+          <span>Soft drinks (Soda, Energy drinks) – Ksh 150</span>
+          <button onclick="addItem('Soft drinks (Soda, Energy drinks)', 150)">+</button>
+        </div>
+        <div class="item" data-name="Bottled water" data-price="100">
+          <img src="/photos/bottled water.jpeg" width="50px" height="50px">
+          <span>Bottled water – Ksh 100</span>
+          <button onclick="addItem('Bottled water', 100)">+</button>
+        </div>
+        <div class="item" data-name="Milkshakes (Vanilla, Chocolate, Strawberry)" data-price="100">
+          <img src="/photos/milkshakes.jpeg" width="50px" height="50px">
+          <span>Milkshakes (Vanilla, Chocolate, Strawberry) – Ksh 100</span>
+          <button onclick="addItem('Milkshakes (Vanilla, Chocolate, Strawberry)', 100)">+</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Order Summary -->
+    <section class="order-summary">
+      <h2>Current Order - Table <span id="table-number">1</span></h2>
+      <div id="success-message" class="success-message">Order sent to kitchen successfully!</div>
+      <div id="error-message" class="error-message">Error sending order. Please try again.</div>
+      <table id="order-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Order items will be added here  -->
+        </tbody>
+      </table>
+      <p>Total: <span id="total-amount">Ksh 0</span></p>
+      
+      <div class="order-buttons">
+        <div>
+          <button onclick="cancelOrder()">Cancel Order</button>
+          <button onclick="sendToKitchen()">Send to Kitchen</button>
+        </div>
+        <button id="proceed-payment" class="proceed-payment" onclick="proceedToPayment()" disabled>Proceed to Payment</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let order = [];
+    let total = 0;
+    let tableNumber = 1;
+    let orderSent = false;
+    let orderId = null;
+     
+    // Get table number from URL if available  
+    window.addEventListener('DOMContentLoaded', function() {  
+      const urlParams = new URLSearchParams(window.location.search);  
+      const tableParam = urlParams.get('table');  
+      if (tableParam) {  
+        tableNumber = parseInt(tableParam);  
+        document.getElementById('table-number').textContent = tableNumber;  
+      }  
+    });  
+
+    function toggleCategory(categoryId) {
+      const category = document.getElementById(categoryId);
+      category.style.display = category.style.display === "block" ? "none" : "block";
+    }
+
+    function addItem(name, price) {
+      const existingItem = order.find(item => item.name === name);
+      if (existingItem) {
+        existingItem.quantity += 1;
+        existingItem.total = existingItem.quantity * price;
+      } else {
+        order.push({ name, price, quantity: 1, total: price });
+      }
+      updateOrderSummary();
+    }
+
+    function updateOrderSummary() {
+      const tableBody = document.querySelector("#order-table tbody");
+      const totalAmount = document.getElementById("total-amount");
+      const proceedPaymentBtn = document.getElementById("proceed-payment");
+      
+      tableBody.innerHTML = "";
+      total = 0;
+
+      order.forEach((item, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>
+            <button onclick="decreaseQuantity(${index})">-</button>
+            ${item.quantity}
+            <button onclick="increaseQuantity(${index})">+</button>
+          </td>
+          <td>Ksh ${item.price}</td>
+          <td>Ksh ${item.total}</td>
+        `;
+        tableBody.appendChild(row);
+        total += item.total;
+      });
+
+      totalAmount.textContent = `Ksh ${total}`;
+      
+      // Enable/disable proceed to payment button based on order status
+      proceedPaymentBtn.disabled = !orderSent || order.length === 0;
+    }
+    
+    function increaseQuantity(index) {
+      order[index].quantity += 1;
+      order[index].total = order[index].quantity * order[index].price;
+      updateOrderSummary();
+    }
+    
+    function decreaseQuantity(index) {
+      if (order[index].quantity > 1) {
+        order[index].quantity -= 1;
+        order[index].total = order[index].quantity * order[index].price;
+      } else {
+        order.splice(index, 1);
+      }
+      updateOrderSummary();
+    }
+
+    function cancelOrder() {
+      order = [];
+      total = 0;
+      orderSent = false;
+      orderId = null;
+      updateOrderSummary();
+      hideMessages();
+    }
+
+    function sendToKitchen() {
+      if (order.length === 0) {
+        showError("Your order is empty. Please add items.");
+        return;
+      }
+      
+      // Prepare data for sending to server
+      const orderData = {
+        table_number: tableNumber,
+        items: order,
+        total_amount: total
+      };
+      
+      // Send order to server
+      fetch('process_order.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          showSuccess("Order sent to kitchen successfully!");
+          orderSent = true;
+          orderId = data.order_id;
+          updateOrderSummary(); // Update to enable the payment button
+        } else {
+          showError("Error: " + data.message);
+        }
+      })
+      .catch(error => {
+        showError("Network error. Please try again.");
+        console.error('Error:', error);
+      });
+    }
+    
+    function proceedToPayment() {
+      if (!orderSent) {
+        showError("Please send your order to the kitchen first.");
+        return;
+      }
+      
+      if (order.length === 0) {
+        showError("Your order is empty. Please add items.");
+        return;
+      }
+      
+      // Redirect to payment page
+      let paymentUrl = 'payment.php?table=' + tableNumber;
+      if (orderId) {
+        paymentUrl = 'payment.php?order_id=' + orderId;
+      }
+      
+      window.location.href = paymentUrl;
+    }
+    
+    function showSuccess(message) {
+      const successMessage = document.getElementById('success-message');
+      successMessage.textContent = message;
+      successMessage.style.display = 'block';
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 3000);
+    }
+    
+    function showError(message) {
+      const errorMessage = document.getElementById('error-message');
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+      setTimeout(() => {
+        errorMessage.style.display = 'none';
+      }, 3000);
+    }
+    
+    function hideMessages() {
+      document.getElementById('success-message').style.display = 'none';
+      document.getElementById('error-message').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
+

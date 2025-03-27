@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEGAD GRILL - Peak Hours Analysis</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Basic Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+  
+    .sidebar-header {
+      padding: 15px 20px;
+      text-align: left;
+      background-color: #2c3e50;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  
+    .sidebar-header h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #ecf0f1;
+      font-weight: bold;
+    }
+  
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .sidebar-menu li {
+      margin-bottom: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      color: #ecf0f1;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+  
+    .sidebar-menu a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  
+    .sidebar-menu a.active {
+      background-color: #00BCD4;
+      color: #fff;
+    }
+  
+    .sidebar-menu i {
+      margin-right: 10px;
+      font-size: 18px;
+      width: 20px;
+      text-align: center;
+    }
+  
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 250px;
+      background-color: #f5f5f5;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background-color: #fff;
+      border-bottom: 1px solid #e0e0e0;
+    }
+  
+    .page-header h1 {
+      color: #333;
+      font-size: 24px;
+      margin: 0;
+    }
+  
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+  
+    .notification-icon {
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: #e74c3c;
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Report Content */
+    .report-container {
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+    }
+    
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 20px;
+    }
+    
+    .report-header h2 {
+      font-size: 20px;
+      color: #333;
+      margin: 0;
+    }
+    
+    .report-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: #00BCD4;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      text-decoration: none;
+    }
+    
+    .btn:hover {
+      background-color: #0097A7;
+    }
+    
+    /* Date Filter */
+    .date-filter {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .date-filter select, .date-filter input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    /* Chart Container */
+    .chart-container {
+      height: 400px;
+      margin-bottom: 30px;
+    }
+    
+    /* Data Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    .data-table th, .data-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .data-table th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+    
+    .data-table tr:hover {
+      background-color: #f9f9f9;
+    }
+    
+    /* Insights Section */
+    .insights {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      border-left: 4px solid #00BCD4;
+    }
+    
+    .insights h3 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .insights ul {
+      padding-left: 20px;
+    }
+    
+    .insights li {
+      margin-bottom: 10px;
+    }
+    
+    .admin-text {
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+    }
+    
+    .admin-text i {
+      margin-right: 5px;
+    }
+    
+    /* Loading Indicator */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+    }
+    
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #00BCD4;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+      .chart-container {
+        height: 300px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 0;
+        transition: width 0.3s;
+      }
+      
+      .sidebar.active {
+        width: 250px;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1001;
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>NEGAD GRILL</h2>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="order_history.html"><i class="fas fa-history"></i> Orders</a></li>
+      <li><a href="kitchen_dashboard.html"><i class="fas fa-fire"></i> Kitchen</a></li>
+      <li><a href="reports.html" class="active"><i class="fas fa-chart-bar"></i> Reports</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="page-header">
+      <h1>Peak Hours Analysis</h1>
+      <div class="user-info">
+        <div class="notification-icon">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </div>
+        <span class="admin-text"><i class="fas fa-user"></i> Admin</span>
+      </div>
+    </div>
+    
+    <div class="report-container">
+      <div class="report-header">
+        <h2>Peak Hours Analysis</h2>
+        <div class="report-actions">
+          <button class="btn" onclick="printReport()">Print</button>
+          <button class="btn" onclick="downloadPDF()">Download PDF</button>
+          <button class="btn" onclick="downloadExcel()">Download Excel</button>
+        </div>
+      </div>
+      
+      <div class="date-filter">
+        <label for="date-range">Date Range:</label>
+        <select id="date-range" onchange="updateDateRange()">
+          <option value="today">Today</option>
+          <option value="yesterday">Yesterday</option>
+          <option value="last7days" selected>Last 7 Days</option>
+          <option value="last30days">Last 30 Days</option>
+          <option value="custom">Custom Range</option>
+        </select>
+        
+        <div id="custom-date-range" style="display: none; margin-top: 10px;">
+          <label for="start-date">From:</label>
+          <input type="date" id="start-date">
+          <label for="end-date">To:</label>
+          <input type="date" id="end-date">
+          <button class="btn" onclick="fetchPeakHoursData()">Apply</button>
+        </div>
+      </div>
+      
+      <div id="loading" class="loading">
+        <div class="loading-spinner"></div>
+      </div>
+      
+      <div id="report-content" style="display: none;">
+        <div class="chart-container">
+          <canvas id="peakHoursChart"></canvas>
+        </div>
+        
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Hour</th>
+              <th>Orders</th>
+              <th>Items Sold</th>
+              <th>Revenue (KSh)</th>
+              <th>Avg. Order Value</th>
+            </tr>
+          </thead>
+          <tbody id="peak-hours-data">
+            <!-- Data will be populated by JavaScript -->
+          </tbody>
+        </table>
+        
+        <div class="insights">
+          <h3>Key Insights</h3>
+          <ul id="insights-list">
+            <!-- Insights will be populated by JavaScript -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Include Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    let chart = null;
+    
+    // Fetch peak hours data from the server
+    function fetchPeakHoursData() {
+      // Show loading indicator
+      document.getElementById('loading').style.display = 'flex';
+      document.getElementById('report-content').style.display = 'none';
+      
+      // Get date range parameters
+      const dateRange = document.getElementById('date-range').value;
+      let url = `peak_hours.php?range=${dateRange}`;
+      
+      if (dateRange === 'custom') {
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+        
+        if (!startDate || !endDate) {
+          alert('Please select both start and end dates');
+          return;
+        }
+        
+        url += `&start_date=${startDate}&end_date=${endDate}`;
+      }
+      
+      // Fetch data from the server
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            alert(data.error);
+            return;
+          }
+          
+          // Update the chart and table
+          updateChart(data);
+          populateTable(data);
+          generateInsights(data);
+          
+          // Hide loading indicator and show report content
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('report-content').style.display = 'block';
+        })
+        .catch(error => {
+          console.error('Error fetching peak hours data:', error);
+          alert('Error fetching data. Please try again.');
+          document.getElementById('loading').style.display = 'none';
+        });
+    }
+    
+    // Update chart with data
+    function updateChart(data) {
+      const ctx = document.getElementById('peakHoursChart').getContext('2d');
+      
+      // Destroy existing chart if it exists
+      if (chart) {
+        chart.destroy();
+      }
+      
+      // Create new chart
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.hours,
+          datasets: [
+            {
+              label: 'Orders',
+              data: data.orders,
+              backgroundColor: 'rgba(0, 188, 212, 0.7)',
+              borderColor: 'rgba(0, 188, 212, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'Revenue (KSh)',
+              data: data.revenue,
+              type: 'line',
+              fill: false,
+              backgroundColor: 'rgba(255, 99, 132, 0.7)',
+              borderColor: 'rgba(255, 99, 132, 1)',
+              borderWidth: 2,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Number of Orders'
+              }
+            },
+            y1: {
+              beginAtZero: true,
+              position: 'right',
+              grid: {
+                drawOnChartArea: false
+              },
+              title: {
+                display: true,
+                text: 'Revenue (KSh)'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Hour of Day'
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    // Populate table with data
+    function populateTable(data) {
+      const tableBody = document.getElementById('peak-hours-data');
+      tableBody.innerHTML = '';
+      
+      data.hours.forEach((hour, index) => {
+        const row = document.createElement('tr');
+        
+        const hourCell = document.createElement('td');
+        hourCell.textContent = hour;
+        
+        const ordersCell = document.createElement('td');
+        ordersCell.textContent = data.orders[index];
+        
+        const itemsCell = document.createElement('td');
+        itemsCell.textContent = data.itemsSold[index];
+        
+        const revenueCell = document.createElement('td');
+        revenueCell.textContent = `KSh ${data.revenue[index].toLocaleString()}`;
+        
+        const avgCell = document.createElement('td');
+        avgCell.textContent = `KSh ${data.avgOrderValues[index].toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        
+        row.appendChild(hourCell);
+        row.appendChild(ordersCell);
+        row.appendChild(itemsCell);
+        row.appendChild(revenueCell);
+        row.appendChild(avgCell);
+        
+        tableBody.appendChild(row);
+      });
+    }
+    
+    // Generate insights
+    function generateInsights(data) {
+      const insightsList = document.getElementById('insights-list');
+      insightsList.innerHTML = '';
+      
+      // Get peak hours from the data
+      const peakHoursByOrders = data.summary.peak_hours_by_orders;
+      const peakHoursByRevenue = data.summary.peak_hours_by_revenue;
+      
+      // Calculate total orders and revenue
+      const totalOrders = data.summary.total_orders;
+      const totalRevenue = data.summary.total_revenue;
+      
+      // Find lunch and dinner rush hours
+      const lunchHours = ['12:00', '13:00', '14:00'];
+      const dinnerHours = ['18:00', '19:00', '20:00'];
+      
+      // Calculate orders during lunch and dinner
+      let lunchOrders = 0;
+      let dinnerOrders = 0;
+      
+      lunchHours.forEach(hour => {
+        const index = data.hours.indexOf(hour);
+        if (index !== -1) {
+          lunchOrders += data.orders[index];
+        }
+      });
+      
+      dinnerHours.forEach(hour => {
+        const index = data.hours.indexOf(hour);
+        if (index !== -1) {
+          dinnerOrders += data.orders[index];
+        }
+      });
+      
+      // Calculate percentages
+      const lunchPercentage = totalOrders > 0 ? (lunchOrders / totalOrders * 100).toFixed(1) : 0;
+      const dinnerPercentage = totalOrders > 0 ? (dinnerOrders / totalOrders * 100).toFixed(1) : 0;
+      
+      // Find hour with highest average order value
+      let maxAvgOrderValue = 0;
+      let maxAvgOrderHour = '';
+      
+      data.hours.forEach((hour, index) => {
+        if (data.orders[index] > 0 && data.avgOrderValues[index] > maxAvgOrderValue) {
+          maxAvgOrderValue = data.avgOrderValues[index];
+          maxAvgOrderHour = hour;
+        }
+      });
+      
+      // Add insights
+      const insights = [
+        `Peak hours by order volume: ${peakHoursByOrders.join(', ')}. Consider scheduling more staff during these hours.`,
+        `Peak hours by revenue: ${peakHoursByRevenue.join(', ')}. These hours generate the most income.`,
+        `Lunch rush (${lunchHours.join('-')}) accounts for ${lunchPercentage}% of daily orders.`,
+        `Dinner rush (${dinnerHours.join('-')}) accounts for ${dinnerPercentage}% of daily orders.`,
+        `Average order value is highest at ${maxAvgOrderHour} (KSh ${maxAvgOrderValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}).`,
+        `Consider running promotions during slower hours to increase traffic and optimize staffing.`
+      ];
+      
+      insights.forEach(insight => {
+        const li = document.createElement('li');
+        li.textContent = insight;
+        insightsList.appendChild(li);
+      });
+    }
+    
+    // Update date range display
+    function updateDateRange() {
+      const dateRange = document.getElementById('date-range').value;
+      
+      if (dateRange === 'custom') {
+        document.getElementById('custom-date-range').style.display = 'block';
+      } else {
+        document.getElementById('custom-date-range').style.display = 'none';
+        fetchPeakHoursData();
+      }
+    }
+    
+    // Print report
+    function printReport() {
+      window.print();
+    }
+    
+    // Download as PDF
+    function downloadPDF() {
+      alert('PDF download functionality would be implemented here.');
+    }
+    
+    // Download as Excel
+    function downloadExcel() {
+      alert('Excel download functionality would be implemented here.');
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set today's date as the default for date inputs
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('end-date').value = today;
+      
+      // Set default start date (7 days ago)
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+      document.getElementById('start-date').value = sevenDaysAgo.toISOString().split('T')[0];
+      
+      // Fetch initial data
+      fetchPeakHoursData();
+    });
+  </script>
+</body>
+</html>
+

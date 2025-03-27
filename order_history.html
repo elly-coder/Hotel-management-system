@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order History</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Basic Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      position: fixed;
+      height: 100%;
+      overflow-y: auto;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #3d5871;
+    }
+
+    .sidebar-header h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #ecf0f1;
+    }
+
+    .sidebar-menu {
+      padding: 0;
+      list-style: none;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      padding: 0;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      color: #ecf0f1;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-menu a:hover {
+      background-color: #3d5871;
+    }
+
+    .sidebar-menu a.active {
+      background-color: #00c4cc;
+    }
+
+    .sidebar-menu i {
+      margin-right: 10px;
+      font-size: 18px;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Main Content Wrapper */
+    .content-wrapper {
+      margin-left: 250px;
+      transition: margin-left 0.3s;
+    }
+
+    /* Mobile Toggle Button */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1001;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    
+    /* Order History Styles */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    h1 {
+      color: #00c4cc;
+    }
+    
+    .search-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .search-input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      flex: 1;
+    }
+    
+    .search-button {
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+    
+    .filter-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .date-filter {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .date-input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .filter-button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #f1f1f1;
+    }
+    
+    .filter-button.active {
+      background-color: #4a90e2;
+      color: white;
+    }
+    
+    .orders-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .orders-table th,
+    .orders-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .orders-table th {
+      background-color: #f8f9fa;
+      font-weight: bold;
+    }
+    
+    .orders-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .orders-table tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .status-badge.pending {
+      background-color: rgba(243, 156, 18, 0.2);
+      color: #d35400;
+    }
+    
+    .status-badge.processing {
+      background-color: rgba(52, 152, 219, 0.2);
+      color: #2980b9;
+    }
+    
+    .status-badge.completed {
+      background-color: rgba(46, 204, 113, 0.2);
+      color: #27ae60;
+    }
+    
+    .status-badge.cancelled {
+      background-color: rgba(231, 76, 60, 0.2);
+      color: #c0392b;
+    }
+    
+    .view-button {
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 5px;
+    }
+    
+    .pagination-button {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      background-color: white;
+      cursor: pointer;
+    }
+    
+    .pagination-button.active {
+      background-color: #4a90e2;
+      color: white;
+      border-color: #4a90e2;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background-color: white;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-header {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .close-button {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    
+    .modal-body {
+      padding: 15px;
+    }
+    
+    .order-details {
+      margin-bottom: 20px;
+    }
+    
+    .order-details-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+    
+    .order-details-label {
+      font-weight: bold;
+      width: 120px;
+    }
+    
+    .order-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    
+    .order-items-table th,
+    .order-items-table td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .order-items-table th {
+      background-color: #f8f9fa;
+    }
+    
+    .no-orders {
+      text-align: center;
+      padding: 40px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .content-wrapper {
+        margin-left: 0;
+      }
+      
+      .menu-toggle {
+        display: block;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .filter-container {
+        flex-direction: column;
+      }
+      
+      .date-filter {
+        flex-wrap: wrap;
+      }
+      
+      .orders-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Menu Toggle Button -->
+  <button class="menu-toggle" id="menu-toggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>NEGAD GRILL</h2>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="order_history.html"><i class="fas fa-history"></i> Orders</a></li>
+      <li><a href="kitchen_dashboard.html"><i class="fas fa-fire"></i> Kitchen</a></li>
+      <li><a href="reports.html" class="active"><i class="fas fa-chart-bar"></i> Reports</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+    </ul>
+  </div>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <div class="container">
+      <header>
+        <h1>Waiter's Screen</h1>
+      </header>
+      
+      <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by order ID, table number...">
+        <button id="searchButton" class="search-button">Search</button>
+      </div>
+      
+      <div class="filter-container">
+        <div class="date-filter">
+          <span>From:</span>
+          <input type="date" id="fromDate" class="date-input">
+          <span>To:</span>
+          <input type="date" id="toDate" class="date-input">
+          <button id="applyDateFilter" class="filter-button">Apply</button>
+        </div>
+        
+        <div>
+          <button class="filter-button active" data-filter="all">All</button>
+          <button class="filter-button" data-filter="Pending">Pending</button>
+          <button class="filter-button" data-filter="Processing">Processing</button>
+          <button class="filter-button" data-filter="Completed">Completed</button>
+          <button class="filter-button" data-filter="Cancelled">Cancelled</button>
+        </div>
+      </div>
+      
+      <div id="ordersTableContainer">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Table</th>
+              <th>Date & Time</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody">
+            <tr>
+              <td colspan="6" class="no-orders">Loading orders...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="pagination" id="pagination">
+        <!-- Pagination buttons will be added here -->
+      </div>
+      
+      <!-- Order Details Modal -->
+      <div id="orderModal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title">Order Details</div>
+            <button class="close-button" onclick="closeModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="order-details">
+              <div class="order-details-row">
+                <div class="order-details-label">Order ID:</div>
+                <div id="modalOrderId"></div>
+              </div>
+              <div class="order-details-row">
+                <div class="order-details-label">Table:</div>
+                <div id="modalTable"></div>
+              </div>
+              <div class="order-details-row">
+                <div class="order-details-label">Date & Time:</div>
+                <div id="modalDateTime"></div>
+              </div>
+              <div class="order-details-row">
+                <div class="order-details-label">Status:</div>
+                <div id="modalStatus"></div>
+              </div>
+            </div>
+            
+            <h3>Order Items</h3>
+            <table class="order-items-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="modalOrderItems">
+                <!-- Order items will be added here -->
+              </tbody>
+            </table>
+            
+            <div class="order-total">
+              <strong>Total Amount: </strong>
+              <span id="modalTotalAmount"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Sidebar functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      
+      if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+          sidebar.classList.toggle('active');
+        });
+      }
+      
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(event) {
+        const isClickInsideSidebar = sidebar.contains(event.target);
+        const isClickOnMenuToggle = menuToggle.contains(event.target);
+        
+        if (!isClickInsideSidebar && !isClickOnMenuToggle && sidebar.classList.contains('active')) {
+          sidebar.classList.remove('active');
+        }
+      });
+    });
+  
+    // Global variables
+    let allOrders = [];
+    let filteredOrders = [];
+    let currentPage = 1;
+    let ordersPerPage = 10;
+    let currentFilter = 'all';
+    
+    // DOM elements
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const fromDateInput = document.getElementById('fromDate');
+    const toDateInput = document.getElementById('toDate');
+    const applyDateFilterButton = document.getElementById('applyDateFilter');
+    const filterButtons = document.querySelectorAll('.filter-button[data-filter]');
+    const ordersTableBody = document.getElementById('ordersTableBody');
+    const paginationContainer = document.getElementById('pagination');
+    const orderModal = document.getElementById('orderModal');
+    
+    // Initialize the page
+    function initPage() {
+      // Set up event listeners
+      searchButton.addEventListener('click', applyFilters);
+      searchInput.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+          applyFilters();
+        }
+      });
+      
+      applyDateFilterButton.addEventListener('click', applyFilters);
+      
+      // Set up filter buttons
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Remove active class from all buttons
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          // Add active class to clicked button
+          this.classList.add('active');
+          // Set current filter
+          currentFilter = this.dataset.filter;
+          // Apply filter
+          applyFilters();
+        });
+      });
+      
+      // Set default date values (last 30 days)
+      const today = new Date();
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(today.getDate() - 30);
+      
+      toDateInput.valueAsDate = today;
+      fromDateInput.valueAsDate = thirtyDaysAgo;
+      
+      // Initial data fetch
+      fetchOrders();
+    }
+    
+    // Fetch orders from the server
+    function fetchOrders() {
+      // Show loading state
+      ordersTableBody.innerHTML = '<tr><td colspan="6" class="no-orders">Loading orders...</td></tr>';
+      
+      // Fetch orders from the server
+      fetch('fetch_orders.php')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.orders) {
+            allOrders = data.orders;
+            applyFilters();
+          } else {
+            ordersTableBody.innerHTML = '<tr><td colspan="6" class="no-orders">No orders found</td></tr>';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching orders:', error);
+          ordersTableBody.innerHTML = '<tr><td colspan="6" class="no-orders">Error loading orders. Please try again.</td></tr>';
+        });
+    }
+    
+    // Apply filters to orders
+    function applyFilters() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const fromDate = fromDateInput.value ? new Date(fromDateInput.value) : null;
+      const toDate = toDateInput.value ? new Date(toDateInput.value) : null;
+      
+      // If toDate is provided, set it to the end of the day
+      if (toDate) {
+        toDate.setHours(23, 59, 59, 999);
+      }
+      
+      // Filter orders
+      filteredOrders = allOrders.filter(order => {
+        // Filter by search term
+        const orderIdMatch = order.order_id.toString().includes(searchTerm);
+        const tableMatch = order.table_number.toString().includes(searchTerm);
+        const searchMatch = orderIdMatch || tableMatch;
+        
+        // Filter by status
+        const statusMatch = currentFilter === 'all' || order.status === currentFilter;
+        
+        // Filter by date range
+        let dateMatch = true;
+        const orderDate = new Date(order.created_at);
+        
+        if (fromDate && toDate) {
+          dateMatch = orderDate >= fromDate && orderDate <= toDate;
+        } else if (fromDate) {
+          dateMatch = orderDate >= fromDate;
+        } else if (toDate) {
+          dateMatch = orderDate <= toDate;
+        }
+        
+        return searchMatch && statusMatch && dateMatch;
+      });
+      
+      // Reset to first page
+      currentPage = 1;
+      
+      // Render orders and pagination
+      renderOrders();
+      renderPagination();
+    }
+    
+    // Render orders table
+    function renderOrders() {
+      if (filteredOrders.length === 0) {
+        ordersTableBody.innerHTML = '<tr><td colspan="6" class="no-orders">No orders found</td></tr>';
+        return;
+      }
+      
+      // Calculate pagination
+      const startIndex = (currentPage - 1) * ordersPerPage;
+      const endIndex = Math.min(startIndex + ordersPerPage, filteredOrders.length);
+      const paginatedOrders = filteredOrders.slice(startIndex, endIndex);
+      
+      // Clear table body
+      ordersTableBody.innerHTML = '';
+      
+      // Add orders to table
+      paginatedOrders.forEach(order => {
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+          <td>#${order.order_id}</td>
+          <td>${order.table_number}</td>
+          <td>${formatDateTime(order.created_at)}</td>
+          <td>Ksh ${order.total_amount}</td>
+          <td><span class="status-badge ${order.status.toLowerCase()}">${order.status}</span></td>
+          <td><button class="view-button" onclick="viewOrderDetails(${order.order_id})">View Details</button></td>
+        `;
+        
+        ordersTableBody.appendChild(row);
+      });
+    }
+    
+    // Render pagination
+    function renderPagination() {
+      const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+      
+      if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+      }
+      
+      let paginationHTML = '';
+      
+      // Previous button
+      paginationHTML += `
+        <button class="pagination-button" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+          &laquo;
+        </button>
+      `;
+      
+      // Page buttons
+      for (let i = 1; i <= totalPages; i++) {
+        paginationHTML += `
+          <button class="pagination-button ${currentPage === i ? 'active' : ''}" onclick="changePage(${i})">
+            ${i}
+          </button>
+        `;
+      }
+      
+      // Next button
+      paginationHTML += `
+        <button class="pagination-button" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+          &raquo;
+        </button>
+      `;
+      
+      paginationContainer.innerHTML = paginationHTML;
+    }
+    
+    // Change page
+    function changePage(page) {
+      currentPage = page;
+      renderOrders();
+      
+      // Update active pagination button
+      const paginationButtons = document.querySelectorAll('.pagination-button');
+      paginationButtons.forEach(button => {
+        button.classList.remove('active');
+        if (button.textContent.trim() === currentPage.toString()) {
+          button.classList.add('active');
+        }
+      });
+      
+      // Scroll to top of table
+      window.scrollTo({
+        top: document.querySelector('.orders-table').offsetTop - 20,
+        behavior: 'smooth'
+      });
+    }
+    
+    // View order details
+    function viewOrderDetails(orderId) {
+      const order = allOrders.find(o => o.order_id == orderId);
+      
+      if (!order) {
+        alert('Order not found');
+        return;
+      }
+      
+      // Populate modal with order details
+      document.getElementById('modalOrderId').textContent = `#${order.order_id}`;
+      document.getElementById('modalTable').textContent = order.table_number;
+      document.getElementById('modalDateTime').textContent = formatDateTime(order.created_at);
+      document.getElementById('modalStatus').innerHTML = `<span class="status-badge ${order.status.toLowerCase()}">${order.status}</span>`;
+      document.getElementById('modalTotalAmount').textContent = `Ksh ${order.total_amount}`;
+      
+      // Populate order items
+      const modalOrderItems = document.getElementById('modalOrderItems');
+      modalOrderItems.innerHTML = '';
+      
+      order.items.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.item_name}</td>
+          <td>${item.quantity}</td>
+          <td>Ksh ${item.price}</td>
+          <td>Ksh ${item.total}</td>
+        `;
+        modalOrderItems.appendChild(row);
+      });
+      
+      // Show modal
+      orderModal.style.display = 'flex';
+    }
+    
+    // Close modal
+    function closeModal() {
+      orderModal.style.display = 'none';
+    }
+    
+    // Format date and time
+    function formatDateTime(dateTimeStr) {
+      const date = new Date(dateTimeStr);
+      return date.toLocaleString();
+    }
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+      if (event.target === orderModal) {
+        closeModal();
+      }
+    });
+    
+    // Initialize the page when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', initPage);
+  </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+body {
+  background-color: #121212;
+  color: #fff;
+  line-height: 1.6;
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center;
+}
+
+header {
+  color: #e2e60e;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.logo {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  
+}
+
+nav ul li {
+  margin-left: 20px;
+}
+
+nav ul li a {
+  color: #ebc858;
+  text-decoration: none;
+  font-size: 20pt;
+}
+nav ul li a:hover{
+  color: #a76749;
+  font-size: 24pt;
+}
+
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+  background-image: url(recepition.jpg);
+  background-position: center;
+  background-size: cover;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero h2 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.hero span {
+  font-weight: bold;
+  color: #d4af37;
+}
+
+.hero p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  display: inline-block;
+  background: #ebc858;
+  color: #121212;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+
+.btn:hover{
+  color: #161615;
+  background-color: #f3bb05;
+  font-size: 17pt;
+
+}
+
+.dishes {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.dish-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+
+  .dish {
+    text-align: center;
+    background: light black;
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    width: 250px; 
+    height: auto; 
+}
+
+
+
+
+.dish-image {
+  background:light black;
+  height: 150px;
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  object-fit:cover;
+  background-position: center;
+}
+
+
+.dish:nth-child(1) .dish-image {
+  background-image: url('photos/goat\ meat.jpeg');
+  background-size: cover; 
+    background-position: center;  
+    background-repeat: no-repeat;  
+    width: 100%;
+    height: 150px;  
+    border-radius: 10px;
+}
+
+.dish:nth-child(2) .dish-image {
+  background-image: url('photos/ugali.jpeg');
+  background-size: cover;  
+    background-position: center;  
+    background-repeat: no-repeat;  
+    width: 100%;
+    height: 150px; 
+    border-radius: 10px;
+}
+
+.dish:nth-child(3) .dish-image {
+  background-image: url('photos/pilau\ spiced.jpeg');
+  background-size: cover;  
+    background-position: center;  
+    background-repeat: no-repeat; 
+    width: 100%;
+    height: 150px;  
+    border-radius: 10px;
+}
+
+.dish h4 {
+  font-size: 18pt;
+  color: #fff;
+}
+
+.dish p {
+  font-size: 13pt;
+  color: #bbb;
+}
+
+/* Footer */
+footer {
+  background-color: #222;
+  color: white;
+  padding: 60px 0 20px;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.footer-logo h2 {
+  color: #ff8c00;
+  margin-bottom: 15px;
+}
+
+.footer-links h3, .footer-contact h3, .footer-social h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.footer-links ul li {
+  margin-bottom: 10px;
+}
+
+.footer-links ul li a:hover {
+  color: #ff8c00;
+}
+
+.footer-contact p {
+  margin-bottom: 10px;
+}
+
+.footer-contact i, .footer-social i {
+  margin-right: 10px;
+  color: #ff8c00;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #444;
+  font-size: 14px;
+}

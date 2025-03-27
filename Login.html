@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negad Hotel - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background: url('/photos/login.jpeg') no-repeat center center/cover;
+            font-family: Arial, sans-serif;
+        }
+        .overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+           
+        .login-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            width: 350px;
+            box-shadow: 0px 0px 10px rgba(85, 70, 70, 0.678); 
+            border: 1px solid aliceblue;
+        }
+        .login-container h2 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .input-container {
+            display: flex;
+            align-items: center;
+            background: transparent;
+            margin: 10px 0;
+            padding: 5px;
+            border-radius: 15px;
+            border: 1px solid white;
+        }
+        .input-container input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            outline: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .input-container input::placeholder {
+            color: rgba(255, 255, 255, 0.8); 
+        }
+        .input-container i {
+            color:white;
+            margin: 0 10px;
+        }
+        .toggle-password {
+            cursor: pointer;
+        }
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .remember-forgot span {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: lightgray;
+        }
+        .register-link {
+            color: white;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        .register-link b {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .top-button {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px;
+            left: 10px;
+            margin-top: 10px;
+        }
+        .top-button button {
+            padding: 8px 15px;
+            border: none;
+            background: rgb(58, 182, 190);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="top-button">
+        <button>Admin</button>
+    </div>
+    <div class="login-container">
+        <h2>Negad Hotel</h2>
+       <!-- Change your form to this -->
+<form action="logincheckup.php" method="post">
+    <div class="input-container">
+        <i class="fas fa-user"></i>
+        <input type="text" id="username" name="email" placeholder="Email" required>
+    </div>
+    <div class="input-container">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
+    </div>
+    <div class="remember-forgot">
+        <label><input type="checkbox" name="remember"> Remember me</label>
+        <span>Forgot password?</span>
+    </div>
+    <button type="submit" name="login" class="btn">Login</button>
+    <p class="register-link">Don't have an account?  
+        <a href="register.html"><b>Register</b></a>
+    </p>
+</form>
+    
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        function validateLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+                alert('Please enter both username and password.');
+            } else {
+                alert('Login successful!');
+            }
+        }
+    </script>
+</body>
+</html>
